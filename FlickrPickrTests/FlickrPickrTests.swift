@@ -22,7 +22,6 @@ struct FlickrPickrTests {
         let challengeDate = "Sep 18, 2024"
         
         let formattedDate = DateFormatter.formattedPublishDate(utcDate)
-        print(formattedDate, challengeDate)
         
         #expect(formattedDate == challengeDate, "FormattedDate and ChallengeDate should match.")
     }

@@ -33,8 +33,11 @@
 		3A2330A82C9CAA42004B0AED /* Exceptions for "FlickrPickr" folder in "FlickrPickrTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				"DateFormatter+FlickrPickr.swift",
-				NetworkingService.swift,
+				Models/FlickrPicItem.swift,
+				Services/NetworkingService.swift,
+				"Utils/DateFormatter+FlickrPickr.swift",
+				"View Models/FPListViewModel.swift",
+				Views/FPDetailsView.swift,
 			);
 			target = 3A2330872C9CA79F004B0AED /* FlickrPickrTests */;
 		};
