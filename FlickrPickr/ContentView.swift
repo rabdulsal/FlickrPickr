@@ -7,32 +7,56 @@
 
 import SwiftUI
 
+struct FPSearchBar: View {
+    @Binding var searchText: String
+    var onSearchTextChanged: () -> Void
+    
+    var body: some View {
+        TextField("Search", text: $searchText, onEditingChanged: { _ in
+            onSearchTextChanged()
+        })
+        .textFieldStyle(RoundedBorderTextFieldStyle())
+        .padding()
+    }
+}
+
 struct ContentView: View {
     
     @StateObject private var picsViewModel = FPListViewModel()
+    @State private var searchText = ""
     
     var body: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading) {
+        
+        
+        ZStack {
+            
+            VStack {
                 
-                ForEach(picsViewModel.images, id: \.link) { image in
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(image.title)
-                        Text(image.author)
-                        Text(image.description)
-                        Text(image.published)
-                        Text(image.media.m)
-                        
-                        Divider()
-                    }
-                    .padding(.bottom, 10)
+                // SearchBar
+                FPSearchBar(searchText: $searchText) {
+                    picsViewModel.searchImages(for: searchText)
                 }
+                
+                // Search Results
+                ScrollView {
+                        
+                    ForEach(picsViewModel.images, id: \.link) { image in
+                        
+                        LazyVStack(alignment: .leading, spacing: 8) {
+                            Text(image.title)
+                            Text(image.author)
+                            Text(image.description)
+                            Text(image.published)
+                            Text(image.media.m)
+                            
+                            Divider()
+                        }
+                        .padding(.bottom, 10)
+                    }
+                    .padding()
+                }
+                
             }
-            .onAppear {
-                picsViewModel.searchImages(for: "porcupine")
-            }
-            .padding()
         }
     }
 }

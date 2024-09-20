@@ -48,7 +48,7 @@ class FPListViewModel: ObservableObject {
     func searchImages(for searchString: String) {
         Task {
             do {
-                let result = try await networkService.searchImages(for: "porcupine")
+                let result = try await networkService.searchImages(for: searchString)
                 switch result {
                 case .success(let picData):
                     images = picData.items
