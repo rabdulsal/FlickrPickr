@@ -29,9 +29,22 @@
 		3A2330922C9CA79F004B0AED /* FlickrPickrUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlickrPickrUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		3A2330A82C9CAA42004B0AED /* Exceptions for "FlickrPickr" folder in "FlickrPickrTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				NetworkingService.swift,
+			);
+			target = 3A2330872C9CA79F004B0AED /* FlickrPickrTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		3A23307A2C9CA786004B0AED /* FlickrPickr */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3A2330A82C9CAA42004B0AED /* Exceptions for "FlickrPickr" folder in "FlickrPickrTests" target */,
+			);
 			path = FlickrPickr;
 			sourceTree = "<group>";
 		};
