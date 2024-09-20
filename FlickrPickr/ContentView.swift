@@ -22,7 +22,7 @@ struct ContentView: View {
                         Text(image.author)
                         Text(image.description)
                         Text(image.published)
-                        Text(image.link)
+                        Text(image.media.m)
                         
                         Divider()
                     }
