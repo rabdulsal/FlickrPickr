@@ -12,11 +12,60 @@ struct FPSearchBar: View {
     var onSearchTextChanged: () -> Void
     
     var body: some View {
-        TextField("Search", text: $searchText, onEditingChanged: { _ in
+        TextField("Search", text: $searchText)
+        .onChange(of: searchText) { _,_ in
             onSearchTextChanged()
-        })
+        }
         .textFieldStyle(RoundedBorderTextFieldStyle())
         .padding()
+    }
+}
+
+struct FPDetailsView: View {
+    var image: FlickrPicItem
+    
+    var body: some View {
+        VStack {
+            AsyncImage(url: URL(string: image.media.m)) { obj in
+                if let image = obj.image {
+                    image
+                        .resizable()
+                        .scaledToFit()
+                } else {
+                    Color.gray
+                }
+            }
+            .frame(maxHeight: 300)
+            
+            Text(image.title)
+                .font(.headline)
+                .padding(.top)
+            
+            Text(image.description)
+                .font(.body)
+                .padding(.vertical)
+            
+            Text("Author: \(image.author)")
+                .font(.subheadline)
+                .padding(.bottom)
+            
+            Text("Published: \(formatDate(image.published))")
+                .font(.subheadline)
+                .padding(.bottom)
+        }
+        .padding()
+        .navigationTitle("Details")
+    }
+    
+    func formatDate(_ published: String) -> String {
+        // Example date formatting
+        let dateFormatter = ISO8601DateFormatter()
+        if let date = dateFormatter.date(from: published) {
+            let outputFormatter = DateFormatter()
+            outputFormatter.dateStyle = .medium
+            return outputFormatter.string(from: date)
+        }
+        return published
     }
 }
 
@@ -24,11 +73,12 @@ struct ContentView: View {
     
     @StateObject private var picsViewModel = FPListViewModel()
     @State private var searchText = ""
+    @Namespace private var namespace
     
     var body: some View {
         
         
-        ZStack {
+        NavigationStack {
             
             VStack {
                 
@@ -37,25 +87,50 @@ struct ContentView: View {
                     picsViewModel.searchImages(for: searchText)
                 }
                 
-                // Search Results
-                ScrollView {
-                        
-                    ForEach(picsViewModel.images, id: \.link) { image in
-                        
-                        LazyVStack(alignment: .leading, spacing: 8) {
-                            Text(image.title)
-                            Text(image.author)
-                            Text(image.description)
-                            Text(image.published)
-                            Text(image.media.m)
+                switch picsViewModel.fetchState {
+                case .idle:
+                    Text("Search for Pics!").font(.largeTitle)
+                case .isFetching:
+                    ProgressView("Fetch FlickrPics....")
+                        .controlSize(.extraLarge)
+                case .fetched:
+                    // Search Results
+                    ScrollView {
                             
-                            Divider()
+                        ForEach(picsViewModel.images, id: \.link) { image in
+                            
+                            NavigationLink(destination: FPDetailsView(image: image)) {
+                                LazyVStack(alignment: .leading, spacing: 8) {
+                                    HStack {
+                                        AsyncImage(url: URL(string: image.media.m)) { obj in
+                                            if let image = obj.image {
+                                                image
+                                                    .resizable()
+                                                    .scaledToFit()
+                                            } else {
+                                                Color.gray
+                                            }
+                                        }
+                                        
+                                        VStack(alignment: .leading) {
+                                            Text(image.title)
+                                            Text(image.author)
+                                            Text(image.published)
+                                        }
+                                    }
+                                    
+                                    Divider()
+                                }
+                            }
+                            .padding(.bottom, 10)
                         }
-                        .padding(.bottom, 10)
+                        .padding()
                     }
-                    .padding()
+                case .fetchFailed(let errorDesc):
+                    Text(errorDesc).font(.largeTitle)
                 }
                 
+                Spacer()
             }
         }
     }

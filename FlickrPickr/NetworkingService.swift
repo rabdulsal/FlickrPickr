@@ -35,28 +35,34 @@ struct FlickrPicItem: Codable {
 }
 
 enum DataFetchState {
-    case isFetching, fetched, fetchFailed
+    case idle, isFetching, fetched, fetchFailed(_ errorDesc: String)
 }
 
 @MainActor
 class FPListViewModel: ObservableObject {
     
     @Published var images = [FlickrPicItem]()
-    @Published var fetchState: DataFetchState = .isFetching
+    @Published var fetchState: DataFetchState = .idle
     let networkService = NetworkingService<FlickrPicData>()
     
     func searchImages(for searchString: String) {
+        if searchString.isEmpty {
+            fetchState = .idle
+            return
+        }
+        
         Task {
             do {
                 let result = try await networkService.searchImages(for: searchString)
                 switch result {
                 case .success(let picData):
+                    fetchState = .fetched
                     images = picData.items
                 case .failure(let error):
-                    print("Error: \(error.localizedDescription)")
+                    fetchState = .fetchFailed(error.localizedDescription)
                 }
             } catch {
-                print("Error: \(error.localizedDescription)")
+                fetchState = .fetchFailed(error.localizedDescription)
             }
         }
     }
