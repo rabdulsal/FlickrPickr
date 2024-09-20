@@ -9,31 +9,31 @@ import SwiftUI
 
 struct ContentView: View {
     
-    let service = NetworkingService()
-    @State private var jsonStr = ""
+    @StateObject private var picsViewModel = FPListViewModel()
     
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("\(jsonStr)")
-        }
-        .task {
-            do {
-                let result = try await service.searchImages(for: "porcupine")
-                switch result {
-                case .success(let data):
-                    let dataStr = String(data: data, encoding: .utf8)
-                    jsonStr = dataStr ?? "No Data"
-                case .failure(let error):
-                    print("Error: \(error.localizedDescription)")
+        ScrollView {
+            LazyVStack(alignment: .leading) {
+                
+                ForEach(picsViewModel.images, id: \.link) { image in
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(image.title)
+                        Text(image.author)
+                        Text(image.description)
+                        Text(image.published)
+                        Text(image.link)
+                        
+                        Divider()
+                    }
+                    .padding(.bottom, 10)
                 }
-            } catch {
-                print("Error: \(error.localizedDescription)")
             }
+            .onAppear {
+                picsViewModel.searchImages(for: "porcupine")
+            }
+            .padding()
         }
-        .padding()
     }
 }
 
