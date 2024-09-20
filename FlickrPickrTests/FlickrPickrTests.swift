@@ -6,6 +6,9 @@
 //
 
 import Testing
+import Foundation
+import XCTest
+
 @testable import FlickrPickr
 
 struct FlickrPickrTests {
@@ -14,4 +17,13 @@ struct FlickrPickrTests {
         // Write your test here and use APIs like `#expect(...)` to check expected conditions.
     }
 
+    @Test func testDateFormatterShouldProperlyFormatDates() {
+        let utcDate = "2024-09-18T23:41:16Z"
+        let challengeDate = "Sep 18, 2024"
+        
+        let formattedDate = DateFormatter.formattedPublishDate(utcDate)
+        print(formattedDate, challengeDate)
+        
+        #expect(formattedDate == challengeDate, "FormattedDate and ChallengeDate should match.")
+    }
 }

@@ -46,8 +46,9 @@ class FPListViewModel: ObservableObject {
     let networkService = NetworkingService<FlickrPicData>()
     
     func searchImages(for searchString: String) {
-        if searchString.isEmpty {
+        guard !searchString.isEmpty else {
             fetchState = .idle
+            images = []
             return
         }
         

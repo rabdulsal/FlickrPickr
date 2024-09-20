@@ -49,25 +49,16 @@ struct FPDetailsView: View {
                 .font(.subheadline)
                 .padding(.bottom)
             
-            Text("Published: \(formatDate(image.published))")
+            Text("Published: \(DateFormatter.formattedPublishDate(image.published))")
                 .font(.subheadline)
                 .padding(.bottom)
         }
         .padding()
         .navigationTitle("Details")
     }
-    
-    func formatDate(_ published: String) -> String {
-        // Example date formatting
-        let dateFormatter = ISO8601DateFormatter()
-        if let date = dateFormatter.date(from: published) {
-            let outputFormatter = DateFormatter()
-            outputFormatter.dateStyle = .medium
-            return outputFormatter.string(from: date)
-        }
-        return published
-    }
 }
+
+
 
 struct ContentView: View {
     
